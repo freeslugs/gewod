@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>GEWOD</title>
+	<script src="{{url_for('static', filename='bower_components/tracking.js/build/tracking.js')}}" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>
+<img id="test_img" src="{{url_for('static', filename='test_img.jpg')}}" alt="" height="800px;" width="900px;">
+
+<script>	
+// Constructor
+var MyTracker = function() {
+	MyTracker.base(this, 'constructor');
+}
+tracking.inherits(MyTracker, tracking.Tracker);
+
+MyTracker.prototype.track = function(pixels, width, height) {
+	console.log(width);
+	this.emit('track', {
+		
+	});
+}
+
+var tracker = new MyTracker();
+
+
+tracker.on('track', function(event) {
+  // Results are inside the event
+  console.log(event);
+});
+
+tracking.track('#test_img', tracker);
+
+</script>
+
+</body>
+</html>
