@@ -1,0 +1,24 @@
+{
+  "name": "gewod",
+  "homepage": "https://github.com/freeslugs/gewod",
+  "authors": [
+    "Gilad <freeslugs@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "static/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "dat.gui": "dat-gui#^0.6.3",
+    "threejs": "*",
+    "tracking": "tracking.js#^1.1.3"
+  }
+}
