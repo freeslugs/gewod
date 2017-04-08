@@ -4,10 +4,23 @@
 	<meta charset="utf-8">
 	<title>GEWOD</title>
 	<script src="{{url_for('static', filename='bower_components/tracking/build/tracking.js')}}" type="text/javascript" charset="utf-8"></script>
+	<style>
+		img, canvas {
+		  margin-left: 230px;
+		  margin-top: 120px;
+		  position: absolute;
+		}
+		</style>
+	</style>
 </head>
 
 <body>
-<img id="test_img" src="{{url_for('static', filename='test_img.jpg')}}" alt="" height="800px;" width="900px;">
+<div id="demo-container">
+	<img id="test_img" src="{{url_for('static', filename='test_img.jpg')}}" alt="" height="800px;" width="900px;">
+	<!-- <video id="test_img" height="800" widht="900"></video> -->
+	<canvas id="canvas" height="800" width="900" ></canvas>	
+</div>
+
 
 <script>	
 // Constructor
@@ -16,22 +29,27 @@ var MyTracker = function() {
 }
 tracking.inherits(MyTracker, tracking.Tracker);
 
+var context = canvas.getContext('2d');
+
 MyTracker.prototype.track = function(pixels, width, height) {
-	console.log(width);
+	var mat = tracking.Matrix.constructor();
+	mat.pixels = pixels;
 	this.emit('track', {
-		
+		mat
 	});
 }
 
 var tracker = new MyTracker();
 
+tracker.on('track', function(mat) {
+	// Results are inside the event
+	context.clearRect(0, 0, canvas.width, canvas.height);
+ 	context.strokeStyle = '#a64ceb';
+	context.strokeRect(10, 10, 100, 100);
 
-tracker.on('track', function(event) {
-  // Results are inside the event
-  console.log(event);
 });
 
-tracking.track('#test_img', tracker);
+tracking.track('#test_img', tracker, {camera: true});
 
 </script>
 
