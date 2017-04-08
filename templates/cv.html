@@ -7,7 +7,11 @@
 </head>
 
 <body>
-<img id="test_img" src="{{url_for('static', filename='test_img.jpg')}}" alt="" height="800px;" width="900px;">
+<div id="demo-container">
+	<img id="test_img" src="{{url_for('static', filename='test_img.jpg')}}" alt="" height="800px;" width="900px;">
+	<canvas id="canvas" height="800px" width="900px" ></canvas>	
+</div>
+
 
 <script>	
 // Constructor
@@ -16,19 +20,32 @@ var MyTracker = function() {
 }
 tracking.inherits(MyTracker, tracking.Tracker);
 
+var context = canvas.getContext('2d');
+
 MyTracker.prototype.track = function(pixels, width, height) {
-	console.log(width);
+	var mat = tracking.Matrix.constructor();
+	mat.pixels = pixels;
+	mat.width = width;
+	mat.height = height;
+	// console.log(width);
+	// console.log(height);
+	// console.log( mat.pixels[900, 100000] );
 	this.emit('track', {
-		
+		// width
+		mat
 	});
 }
 
 var tracker = new MyTracker();
 
-
-tracker.on('track', function(event) {
+tracker.on('track', function(mat) {
+	context.clearRect(0, 0, canvas.width, canvas.height);
   // Results are inside the event
-  console.log(event);
+  	console.log(mat);
+  	context.strokeStyle = '#a64ceb';
+	context.strokeRect(0, 0, 100, 100);
+	context.font = '11px Helvetica';
+	context.fillStyle = "#fff";
 });
 
 tracking.track('#test_img', tracker);
