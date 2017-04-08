@@ -9,8 +9,8 @@
 <body>
 
 
-<canvas id="canvas"></canvas>
-<div>
+<canvas id="canvas" width="960" height="540"></canvas>
+<div style="display: none;">
   <img id="source" src="http://160.39.244.36:8080/video" width="960" height="540">
 
   <!-- <img id="source" src="https://mdn.mozillademos.org/files/5397/rhino.jpg"
@@ -22,8 +22,20 @@
   var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext('2d');
   var image = document.getElementById('source');
+  
+  function initCanvas() {
+    // it appears flipped originally, so we flip it once on load
+    ctx.translate(image.width, image.height);
+    ctx.rotate(Math.PI);
+  }
 
-  ctx.drawImage(image, 0, 0);
+  function paintCanvas() {
+    ctx.drawImage(image, 0, 0, image.width, image.height);
+  }
+
+  initCanvas();
+  canvas.onclick = paintCanvas;
+  
 </script>
 
 
