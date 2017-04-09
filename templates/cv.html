@@ -23,7 +23,23 @@
 </div>
 
 
-<script>	
+<script>
+
+// Matrix is 4 rows x 2 columns
+// All pads are the same size in pixels
+// Pads are numbered 0 through 7
+var numPadRows = 4;
+var numPadCols = 2;
+var padHeight = 10;
+var padWidth = 10;
+
+var pads = [
+				[ {'x': 0, 'y': 0  }, {'x': 100, 'y': 0}   ],
+				[ {'x': 0, 'y': 100}, {'x': 100, 'y': 100} ], 
+				[ {'x': 0, 'y': 200}, {'x': 100, 'y': 200} ], 
+				[ {'x': 0, 'y': 300}, {'x': 100, 'y': 300} ] 
+			];
+
 // Constructor
 var MyTracker = function() {
 	MyTracker.base(this, 'constructor');
@@ -39,10 +55,11 @@ MyTracker.prototype.track = function(pixels, width, height) {
 	var R = []; var G = []; var B = [];
 	var i = 0;
 	while (i <= pixels.length) {
-		R.push(pixels[i]); G.push(pixels[i+1]); B.push(pixels[i+2]);
+		R.push(pixels[i]); 
+		G.push(pixels[i+1]); 
+		B.push(pixels[i+2]);
 		i += 4;
 	}
-
 
 	// Convert to mathjs matrix
 	var R_mat = math.matrix(R);
@@ -54,41 +71,72 @@ MyTracker.prototype.track = function(pixels, width, height) {
 	G_mat.resize([800, 900]);
 	B_mat.resize([800, 900]);
 
-	console.log(R_mat.size());
-	// // Get sub-matrix
-	// var R_sub = R_mat.subset(math.index([0, 100], [0, 100]));
-	var R_sub = math.subset(R_mat, math.index([0, 100], [100, 100]));
-	console.log(R_sub);
+	for (var i = 0; i < numPadRows; i++) {
+		for (var j = 0; j < numPadCols; j++) {
+			var pad = pads[i][j];
+			pads[i][j]['content'] = thereIsDropInPad(pad, R_mat, G_mat, B_mat);
+		}
+	}
 
-	// var mat = tracking.Matrix.constructor();
-	// mat.pixels = pixels;
-	// console.log(pixels);
-	// console.log(pixels.length);
-	// console.log(width);
-	// console.log(height);
-	// var mat = Array.from(pixels);
-	// var mat = math.matrix(mat);
-	// mat.resize([800, 900]);
-	// console.log(mat);
 	// Here we need to add results of drops
 	var res = {};
 	this.emit('track', {
-		res
+		pads
 	});
 }
 
 var tracker = new MyTracker();
 
 tracker.on('track', function(res) {
+	// MATRIX OF PADS HERE
+	console.log(res);
+
 	// Results are inside the event
-	context.clearRect(0, 0, canvas.width, canvas.height);
- 	context.strokeStyle = '#fa8000';
+	// context.clearRect(0, 0, canvas.width, canvas.height);
+	// 	context.strokeStyle = '#fa8000';
  	// Here we need to hard code the rectangles
-	context.strokeRect(10, 10, 100, 100);
+	// context.strokeRect(0, 0, 100, 100);
 
 });
 
 tracking.track('#test_img', tracker, {camera: true});
+
+function thereIsDropInPad(pad, R, G, B) {
+	
+	// Create sub-matrix for pad
+	var y_range = [];
+	var x_range = [];
+	for (var i = pad['y']; i < pad['y'] + padHeight; i++) {
+		y_range.push(i);
+	}
+	for (var i = pad['x']; i < pad['x'] + padWidth; i++) {
+		x_range.push(i);
+	}
+
+	var R_sub = math.subset(R, math.index(y_range, x_range));
+	var G_sub = math.subset(G, math.index(y_range, x_range));
+	var B_sub = math.subset(B, math.index(y_range, x_range));
+
+	// Get average value for each RGB channel
+	var avg_R = math.mean(R_sub);
+	var avg_G = math.mean(G_sub);
+	var avg_B = math.mean(B_sub);
+
+	// If RGB similar (within threshold) to bronze, then no drop.
+	// Otherwise, drop
+	
+	// Values to determine if R is bronze
+	// TODO: CALIBRATE VALUES
+	var min_R = 200; var max_R = 210; 
+	var min_G = 200; var max_G = 210; 
+	var min_B = 200; var max_B = 210; 
+
+	if (avg_R <= max_R && avg_R >= min_R && avg_B <= max_B && avg_B >= min_B && avg_B <= max_B && avg_B >= min_B)  {
+		return true;
+	} else {
+		return false;
+	}
+}
 
 </script>
 
