@@ -23,6 +23,7 @@ def move_droplet():
 
 	pad_number = row * 2 + col
 	command = hex(pad_number)
+	
 	# Perhaps necessary for Arduino
 	# command = chr(command)
 	
