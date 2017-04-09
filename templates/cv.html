@@ -39,10 +39,11 @@ MyTracker.prototype.track = function(pixels, width, height) {
 	var R = []; var G = []; var B = [];
 	var i = 0;
 	while (i <= pixels.length) {
-		R.push(pixels[i]); G.push(pixels[i+1]); B.push(pixels[i+2]);
+		R.push(pixels[i]); 
+		G.push(pixels[i+1]); 
+		B.push(pixels[i+2]);
 		i += 4;
 	}
-
 
 	// Convert to mathjs matrix
 	var R_mat = math.matrix(R);
@@ -54,22 +55,24 @@ MyTracker.prototype.track = function(pixels, width, height) {
 	G_mat.resize([800, 900]);
 	B_mat.resize([800, 900]);
 
-	console.log(R_mat.size());
-	// // Get sub-matrix
-	// var R_sub = R_mat.subset(math.index([0, 100], [0, 100]));
-	var R_sub = math.subset(R_mat, math.index([0, 100], [100, 100]));
-	console.log(R_sub);
+	// Get sub-matrix
+	var N = 100;
+	var y_range = Array.apply(null, {length: N}).map(Number.call, Number)
+	var x_range = Array.apply(null, {length: N}).map(Number.call, Number)
 
-	// var mat = tracking.Matrix.constructor();
-	// mat.pixels = pixels;
-	// console.log(pixels);
-	// console.log(pixels.length);
-	// console.log(width);
-	// console.log(height);
-	// var mat = Array.from(pixels);
-	// var mat = math.matrix(mat);
-	// mat.resize([800, 900]);
-	// console.log(mat);
+	var R_sub = math.subset(R_mat, math.index(y_range, x_range));
+	var G_sub = math.subset(G_mat, math.index(y_range, x_range));
+	var B_sub = math.subset(B_mat, math.index(y_range, x_range));
+
+	// Average value 
+	var avg_R = math.mean(R_sub);
+	var avg_G = math.mean(G_sub);
+	var avg_B = math.mean(B_sub);
+
+	console.log(avg_R);
+	console.log(avg_G);
+	console.log(avg_B);
+	
 	// Here we need to add results of drops
 	var res = {};
 	this.emit('track', {
