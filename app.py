@@ -4,8 +4,8 @@ import serial
 app = Flask(__name__)
 app.debug = True
 
-SERIAL_PORT = '/dev/ttyUSB0'
-ser = serial.Serial(SERIAL_PORT)
+# SERIAL_PORT = '/dev/ttyUSB0'
+# ser = serial.Serial(SERIAL_PORT)
 
 @app.route("/")
 def index():
@@ -17,7 +17,7 @@ def test():
 	
 
 @app.route('/move/<row>/<col>/')
-def move_droplet():
+def move_droplet(row, col):
 	if row is None or col is None:
 		return
 
