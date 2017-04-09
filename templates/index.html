@@ -46,6 +46,17 @@
             <p><strong>Volume: </strong>100 in^3</p>
           </div>
         </div>        
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">All Droplets</h3>
+          </div>
+          <div class="panel-body">
+            <p><strong>Name: </strong>Bob the Drop</p>
+            <p><strong>Name: </strong>Tom Dropper</p>
+            <p><strong>Name: </strong>Will Waterson</p>
+            <p><strong>Name: </strong>Margaret Liverpool</p>
+          </div>
+        </div>        
       </div>
     </div>
   </div>
@@ -62,6 +73,20 @@
 
     function paintCanvas() {
       ctx.drawImage(image, 0, 0, image.width, image.height);
+    }
+
+    function drawCircle() {
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = 70;
+
+      ctx.beginPath();  
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
     }
 
     initCanvas();
