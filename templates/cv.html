@@ -4,8 +4,9 @@
 	<meta charset="utf-8">
 	<title>GEWOD</title>
 	<script src="{{url_for('static', filename='bower_components/tracking/build/tracking.js')}}" type="text/javascript" charset="utf-8"></script>
+	<script src="{{url_for('static', filename='bower_components/mathjs/dist/math.js')}}" type="text/javascript" charset="utf-8"></script>
 	<style>
-		img, canvas {
+		video, img, canvas {
 		  margin-left: 230px;
 		  margin-top: 120px;
 		  position: absolute;
@@ -16,7 +17,7 @@
 
 <body>
 <div id="demo-container">
-	<img id="test_img" src="{{url_for('static', filename='test_img.jpg')}}" alt="" height="800px;" width="900px;">
+	<img id="test_img" src="{{url_for('static', filename='test_img.jpg')}}" alt="" height="800;" width="900;">
 	<!-- <video id="test_img" height="800" widht="900"></video> -->
 	<canvas id="canvas" height="800" width="900" ></canvas>	
 </div>
@@ -32,19 +33,40 @@ tracking.inherits(MyTracker, tracking.Tracker);
 var context = canvas.getContext('2d');
 
 MyTracker.prototype.track = function(pixels, width, height) {
-	var mat = tracking.Matrix.constructor();
-	mat.pixels = pixels;
+
+	var R = []; var G = []; var B = [];
+	var i = 0;
+	while (i < pixels.length) {
+		R.push(pixels[i]); G.push(pixels[i+1]); B.push(pixels[i+2]);
+		i += 4;
+	}
+	for (var i = 0; i < pixels.length; i++) {
+		if (i % 2 && )
+	}
+	// var mat = tracking.Matrix.constructor();
+	// mat.pixels = pixels;
+	// console.log(pixels);
+	// console.log(pixels.length);
+	// console.log(width);
+	// console.log(height);
+	// var mat = Array.from(pixels);
+	// var mat = math.matrix(mat);
+	// mat.resize([800, 900]);
+	// console.log(mat);
+	// Here we need to add results of drops
+	var res = {};
 	this.emit('track', {
-		mat
+		res
 	});
 }
 
 var tracker = new MyTracker();
 
-tracker.on('track', function(mat) {
+tracker.on('track', function(res) {
 	// Results are inside the event
 	context.clearRect(0, 0, canvas.width, canvas.height);
- 	context.strokeStyle = '#a64ceb';
+ 	context.strokeStyle = '#fa8000';
+ 	// Here we need to hard code the rectangles
 	context.strokeRect(10, 10, 100, 100);
 
 });
