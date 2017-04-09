@@ -6,6 +6,8 @@
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="/static/bower_components/tracking/build/tracking.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/static/bower_components/mathjs/dist/math.js" type="text/javascript" charset="utf-8"></script>
   <style type="text/css">
     * {
       font-family: 'Lato', sans-serif;
@@ -28,9 +30,10 @@
     </div>
     <div class="row">
       <div class="col-md-9">
-        <canvas id="canvas" style="width: 100%;" width="960" height="540"></canvas>
+        <canvas id="canvas"  style="width: 100%;" width="960" height="540"></canvas>
         <div style="display: none;">
-          <img id="source" src="http://160.39.244.36:8080/video" width="960" height="540">
+          <img id="source" src="/static/god_Frame.png" width="960" height="540"> 
+          <!-- http://160.39.244.36:8080/video -->
         </div>
       </div>
       <div class="col-md-3">
@@ -65,33 +68,155 @@
     var ctx = canvas.getContext('2d');
     var image = document.getElementById('source');
     
+    var numPadRows = 4;
+    var numPadCols = 2;
+    var minR = 160;
+    var maxR = 200;
+    var minG = 80;
+    var maxG = 115;
+    var minB = 15;
+    var maxB = 35;
+
+    var padWidth = canvas.width / numPadRows;
+    var padHeight = canvas.height / numPadCols;
+    var pads =[];
+    var selected = [null,null];
+
+    function averageColor(pad) {
+      var r = 0;
+      var g = 0;
+      var b = 0;
+      for (var i = pad.x; i < pad.x + padWidth; i++) {
+        for (var j = pad.y; j < pad.y +   padHeight; j++) {
+          var rgb = ctx.getImageData(i, j, 1, 1).data;
+          
+          r += rgb[0];
+          g += rgb[1];
+          b += rgb[2];
+        }
+      }
+        
+      r = Math.round(r / (padWidth * padHeight));
+      g = Math.round(g / (padWidth * padHeight));
+      b = Math.round(b / (padWidth * padHeight));
+    
+      return [r,g,b];
+    }
+
+    function dropInPad(pad) {
+      return(pad.r < minR || pad.r > maxR || pad.g < minG || pad.g > maxG || pad.b < minB || pad.b > maxB)
+    }
+
     function initCanvas() {
       // it appears flipped originally, so we flip it once on load
       ctx.translate(image.width, image.height);
       ctx.rotate(Math.PI);
     }
 
-    function paintCanvas() {
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+    function drawGrid() {
+      for (var i=1;i<numPadCols;i++) {
+        for (var j=1;j<numPadRows;j++) {
+          ctx.beginPath();
+          ctx.moveTo(canvas.width, canvas.height-pads[i][j].y);
+          ctx.lineTo(0, canvas.height-pads[i][j].y);
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = 'black';
+          ctx.stroke(); 
+
+          ctx.beginPath();
+          ctx.moveTo(canvas.width - pads[i][j].x, canvas.height);
+          ctx.lineTo(canvas.width - pads[i][j].x, 0);
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = 'black';
+          ctx.stroke(); 
+        }
+      }
     }
 
-    function drawCircle() {
-      var centerX = canvas.width / 2;
-      var centerY = canvas.height / 2;
+    function drawPads() {
+      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // scale and crop
+      // ctx.drawImage(image, 445, 465, 190, 110, 0, 0, image.width, image.height);
+
+      console.log("padWidth: " + padWidth);
+      console.log("padHeight: " + padHeight);
+      
+      pads = []
+
+      for (var i=0;i<numPadCols;i++) {
+        var data = [];
+        for (var j=0;j<numPadRows;j++) {
+          var pad = {
+            x: j * (canvas.width / numPadRows),
+            y: i * (canvas.height / numPadCols)
+          };
+          data.push(pad);
+        }
+        pads.push(data);
+      }
+
+      for (var i=0;i<numPadCols;i++) {
+        for (var j=0;j<numPadRows;j++) {
+          pads[i][j].color = averageColor(pads[i][j])
+          pads[i][j].drop = dropInPad(pads[i][j])
+        }
+      }
+
+      for (var i=0;i<numPadCols;i++) {
+        for (var j=0;j<numPadRows;j++) {
+          // if(pads[i][j].drop)
+            drawCircle(pads[i][j]);
+        }
+      }
+    }
+
+    function paintCanvas() {
+      drawPads();
+      drawGrid();
+    }
+
+    function drawCircle(pad) {
+      var centerX = canvas.width - (pad.x * 2 + padWidth)/2;
+      var centerY = canvas.height -   (pad.y * 2 + padHeight)/2;
       var radius = 70;
 
       ctx.beginPath();  
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-      ctx.fillStyle = 'green';
-      ctx.fill();
       ctx.lineWidth = 5;
-      ctx.strokeStyle = '#003300';
+      ctx.strokeStyle = 'blue';
       ctx.stroke();
     }
 
     initCanvas();
-    window.setInterval(paintCanvas, 100);
+    // window.setInterval(paintCanvas, 100);
+    paintCanvas();
+
+    canvas.addEventListener('click', function(e) {
+      console.log('click: ' + e.offsetX + '/' + e.offsetY);
+      var j = Math.floor(e.offsetX / padWidth);
+      var i = Math.floor(e.offsetY / padHeight);
+      console.log(pads[i][j]);
+    });
+
     
+    // console.log(pads);
+    // console.log(canvas.width);
+    // console.log(canvas.height);
+
+   
+
+    // MyTracker.prototype.track = function(pixels, width, height) {
+    //   console.log(pixels);
+    //   console.log(width);
+    //   console.log(height);
+    // }
+
+    // var tracker = new MyTracker();
+
+    // tracker.on('track', function(res) {
+    //   console.log(res)
+    // });
+    // tracking.track('#canvas', tracker, {camera: true});
   </script>
 
 </body>
