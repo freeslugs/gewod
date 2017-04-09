@@ -4,7 +4,7 @@
   <title>GEWOD</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src="/static/bower_components/tracking/build/tracking.js" type="text/javascript" charset="utf-8"></script>
   <script src="/static/bower_components/mathjs/dist/math.js" type="text/javascript" charset="utf-8"></script>
@@ -198,8 +198,12 @@
       console.log('click: ' + e.offsetX + '/' + e.offsetY);
       var j = Math.floor(e.offsetX / padWidth);
       var i = Math.floor(e.offsetY / padHeight);
-      console.log(pads[i][j]);
-      drawSelectedDrop(pads[i][j]);
+      var pad = pads[i][j];
+      drawSelectedDrop(pad);
+      if(pad.drop) {
+        $.ajax("/move/" + i + "/" + j + "/");
+        alert('moving');
+      }
     });
 
 
