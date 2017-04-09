@@ -33,6 +33,7 @@ var numPadCols = 2;
 var padHeight = 10;
 var padWidth = 10;
 
+// x and y are coordinates of top-left corner
 var pads = [
 				[ {'x': 0, 'y': 0  }, {'x': 100, 'y': 0}   ],
 				[ {'x': 0, 'y': 100}, {'x': 100, 'y': 100} ], 
@@ -89,20 +90,22 @@ var tracker = new MyTracker();
 
 tracker.on('track', function(res) {
 	// MATRIX OF PADS HERE
-	console.log(res);
-
-	// Results are inside the event
-	// context.clearRect(0, 0, canvas.width, canvas.height);
-	// 	context.strokeStyle = '#fa8000';
- 	// Here we need to hard code the rectangles
-	// context.strokeRect(0, 0, 100, 100);
-
+	var pads = res['pads'];
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	for (var i = 0; i < numPadRows; i++) {
+		for (var j = 0; j < numPadCols; j++) {
+			var pad = pads[i][j];
+			context.strokeStyle = '#fa8000';
+	 		// Here we need to hard code the rectangles
+			context.strokeRect(pad['y'], pad['x'], padHeight, padWidth);
+		}
+	}
 });
 
 tracking.track('#test_img', tracker, {camera: true});
 
-function thereIsDropInPad(pad, R, G, B) {
-	
+
+function thereIsDropInPad(pad, R, G, B) {	
 	// Create sub-matrix for pad
 	var y_range = [];
 	var x_range = [];
@@ -124,7 +127,7 @@ function thereIsDropInPad(pad, R, G, B) {
 
 	// If RGB similar (within threshold) to bronze, then no drop.
 	// Otherwise, drop
-	
+
 	// Values to determine if R is bronze
 	// TODO: CALIBRATE VALUES
 	var min_R = 200; var max_R = 210; 
