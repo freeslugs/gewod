@@ -204,7 +204,8 @@
 
 
     function drawSelectedDrop(pad) {
-      destCtx.drawImage(canvas, pad.x, pad.y);
+      destCtx.clearRect(0, 0, destinationCanvas.width, destinationCanvas.height);
+      destCtx.drawImage(canvas, pad.x, pad.y, padWidth, padHeight, 0, 0, padWidth, padHeight);
     }
 
   </script>
