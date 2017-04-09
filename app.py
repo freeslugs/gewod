@@ -5,7 +5,8 @@ app = Flask(__name__)
 app.debug = True
 
 # SERIAL_PORT = '/dev/ttyUSB0'
-# ser = serial.Serial(SERIAL_PORT)
+SERIAL_PORT = '/dev/cu.usbmodem1421'
+ser = serial.Serial(SERIAL_PORT)
 
 @app.route("/")
 def index():
@@ -19,18 +20,18 @@ def test():
 @app.route('/move/<row>/<col>/')
 def move_droplet(row, col):
 	if row is None or col is None:
-		return
+		return "500"
 
 	print row, col
-	print pad_number
 	pad_number = row * 2 + col
-	command = hex(pad_number)
-	
+  
+
+	command = str(pad_number)
 	# Perhaps necessary for Arduino
 	# command = chr(command)
 	
 	ser.write(command)
-	return
+	return "200"
 
 if __name__ == "__main__":
   app.run()

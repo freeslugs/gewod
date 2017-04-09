@@ -32,8 +32,8 @@
       <div class="col-md-9">
         <canvas id="canvas"  style="width: 100%;" width="960" height="540"></canvas>
         <div style="display: none;">
-          <img id="source" src="/static/god_Frame.png" width="960" height="540">
-          <!-- http://160.39.244.36:8080/video -->
+          <img id="source" src="http://160.39.244.36:8080/video" width="960" height="540">
+          <!-- /static/god_Frame.png -->
         </div>
       </div>
       <div class="col-md-3">
@@ -137,9 +137,9 @@
     }
 
     function drawPads() {
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // ctx.drawImage(image, 0, 0, image.width, image.height);
       // scale and crop
-      // ctx.drawImage(image, 445, 465, 190, 110, 0, 0, image.width, image.height);
+      ctx.drawImage(image, 445, 465, 190, 110, 0, 0, image.width, image.height);
       
       pads = []
 
@@ -200,7 +200,7 @@
       var i = Math.floor(e.offsetY / padHeight);
       var pad = pads[i][j];
       drawSelectedDrop(pad);
-      if(pad.drop) {
+      if(!pad.drop) {
         $.ajax("/move/" + i + "/" + j + "/");
         alert('moving');
       }
