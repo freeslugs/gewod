@@ -1,44 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Video/Canvas Demo 1</title>
+  <title>GEWOD</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <style type="text/css">
+    * {
+      font-family: 'Lato', sans-serif;
+    }
+  </style>
 </head>
 <body>
 
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">GEWOD</a>
+      </div>
+    </div>
+  </nav>
 
-<canvas id="canvas" width="960" height="540"></canvas>
-<div style="display: none;">
-  <img id="source" src="http://160.39.244.36:8080/video" width="960" height="540">
+  <div class="container">
+    <div class="page-header">
+      <h1>GEWOD <small style="font-weight: 300;"> Graphic EWOD with optimal design</small></h1>
+    </div>
+    <div class="row">
+      <div class="col-md-9">
+        <canvas id="canvas" style="width: 100%;" width="960" height="540"></canvas>
+        <div style="display: none;">
+          <img id="source" src="http://160.39.244.36:8080/video" width="960" height="540">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Selected Droplet</h3>
+          </div>
+          <div class="panel-body">
+            <img style="width: 100%; margin-bottom: 20px;" src="/static/zoomed-in.jpg">
+            <p><strong>Name: </strong>Bob the Drop</p>
+            <p><strong>Color: </strong><span style="color: rgb(123,45,200)">123,45,200</span></p>
+            <p><strong>Area: </strong>123.5 in^2</p>
+            <p><strong>Volume: </strong>100 in^3</p>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var image = document.getElementById('source');
+    
+    function initCanvas() {
+      // it appears flipped originally, so we flip it once on load
+      ctx.translate(image.width, image.height);
+      ctx.rotate(Math.PI);
+    }
 
-  <!-- <img id="source" src="https://mdn.mozillademos.org/files/5397/rhino.jpg"
-       width="300" height="227"> -->
-</div>
+    function paintCanvas() {
+      ctx.drawImage(image, 0, 0, image.width, image.height);
+    }
 
-
-<script type="text/javascript">
-  var canvas = document.getElementById('canvas');
-  var ctx = canvas.getContext('2d');
-  var image = document.getElementById('source');
-  
-  function initCanvas() {
-    // it appears flipped originally, so we flip it once on load
-    ctx.translate(image.width, image.height);
-    ctx.rotate(Math.PI);
-  }
-
-  function paintCanvas() {
-    ctx.drawImage(image, 0, 0, image.width, image.height);
-  }
-
-  initCanvas();
-  window.setInterval(paintCanvas, 100);
-  
-</script>
-
-
+    initCanvas();
+    window.setInterval(paintCanvas, 100);
+    
+  </script>
 
 </body>
 </html>
