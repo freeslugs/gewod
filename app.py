@@ -21,6 +21,8 @@ def move_droplet(row, col):
 	if row is None or col is None:
 		return
 
+	print row, col
+	print pad_number
 	pad_number = row * 2 + col
 	command = hex(pad_number)
 	
