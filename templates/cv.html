@@ -34,15 +34,32 @@ var context = canvas.getContext('2d');
 
 MyTracker.prototype.track = function(pixels, width, height) {
 
+	// Create 3 arrays of R, G and B values
+	// Each array is an image in the R, G, and B channel
 	var R = []; var G = []; var B = [];
 	var i = 0;
-	while (i < pixels.length) {
+	while (i <= pixels.length) {
 		R.push(pixels[i]); G.push(pixels[i+1]); B.push(pixels[i+2]);
 		i += 4;
 	}
-	for (var i = 0; i < pixels.length; i++) {
-		if (i % 2 && )
-	}
+
+
+	// Convert to mathjs matrix
+	var R_mat = math.matrix(R);
+	var G_mat = math.matrix(G);
+	var B_mat = math.matrix(B);
+
+	// Resize into matrix of 800x900 (rows x cols)
+	R_mat.resize([800, 900]);
+	G_mat.resize([800, 900]);
+	B_mat.resize([800, 900]);
+
+	console.log(R_mat.size());
+	// // Get sub-matrix
+	// var R_sub = R_mat.subset(math.index([0, 100], [0, 100]));
+	var R_sub = math.subset(R_mat, math.index([0, 100], [100, 100]));
+	console.log(R_sub);
+
 	// var mat = tracking.Matrix.constructor();
 	// mat.pixels = pixels;
 	// console.log(pixels);
