@@ -30,8 +30,8 @@
 // Pads are numbered 0 through 7
 var numPadRows = 4;
 var numPadCols = 2;
-var padHeight = 10;
-var padWidth = 10;
+var padHeight = 20;
+var padWidth = 20;
 
 // x and y are coordinates of top-left corner
 var pads = [
@@ -103,7 +103,6 @@ tracker.on('track', function(res) {
 });
 
 tracking.track('#test_img', tracker, {camera: true});
-
 
 function thereIsDropInPad(pad, R, G, B) {	
 	// Create sub-matrix for pad
