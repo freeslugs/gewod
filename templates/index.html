@@ -53,11 +53,8 @@
           <div class="panel-heading">
             <h3 class="panel-title">All Droplets</h3>
           </div>
-          <div class="panel-body">
+          <div id="drop-list" class="panel-body">
             <p><strong>Name: </strong>Bob the Drop</p>
-            <p><strong>Name: </strong>Tom Dropper</p>
-            <p><strong>Name: </strong>Will Waterson</p>
-            <p><strong>Name: </strong>Margaret Liverpool</p>
           </div>
         </div>        
       </div>
@@ -137,9 +134,6 @@
       ctx.drawImage(image, 0, 0, image.width, image.height);
       // scale and crop
       // ctx.drawImage(image, 445, 465, 190, 110, 0, 0, image.width, image.height);
-
-      console.log("padWidth: " + padWidth);
-      console.log("padHeight: " + padHeight);
       
       pads = []
 
@@ -162,10 +156,13 @@
         }
       }
 
+      $("#drop-list").empty();  
       for (var i=0;i<numPadCols;i++) {
         for (var j=0;j<numPadRows;j++) {
-          // if(pads[i][j].drop)
+          if(pads[i][j].drop) {
             drawCircle(pads[i][j]);
+            $("#drop-list").append("<p><strong>Name: </strong>Drop " + i + " " + j + "</p>");
+          }
         }
       }
     }
@@ -188,8 +185,8 @@
     }
 
     initCanvas();
-    // window.setInterval(paintCanvas, 100);
-    paintCanvas();
+    window.setInterval(paintCanvas, 1000);
+    // paintCanvas();
 
     canvas.addEventListener('click', function(e) {
       console.log('click: ' + e.offsetX + '/' + e.offsetY);
