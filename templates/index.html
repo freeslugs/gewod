@@ -32,7 +32,7 @@
       <div class="col-md-9">
         <canvas id="canvas"  style="width: 100%;" width="960" height="540"></canvas>
         <div style="display: none;">
-          <img id="source" src="/static/god_Frame.png" width="960" height="540"> 
+          <img id="source" src="/static/god_Frame.png" width="960" height="540">
           <!-- http://160.39.244.36:8080/video -->
         </div>
       </div>
@@ -42,7 +42,11 @@
             <h3 class="panel-title">Selected Droplet</h3>
           </div>
           <div class="panel-body">
-            <img style="width: 100%; margin-bottom: 20px;" src="/static/zoomed-in.jpg">
+            <canvas height="300" id="destinationCanvas"></canvas>
+            <div style="display: none;">
+            <img src="" alt="">
+            </div>
+            <!-- <img style="width: 100%; margin-bottom: 20px;" src="/static/zoomed-in.jpg"> -->
             <p><strong>Name: </strong>Bob the Drop</p>
             <p><strong>Color: </strong><span style="color: rgb(123,45,200)">123,45,200</span></p>
             <p><strong>Area: </strong>123.5 in^2</p>
@@ -54,7 +58,6 @@
             <h3 class="panel-title">All Droplets</h3>
           </div>
           <div id="drop-list" class="panel-body">
-            <p><strong>Name: </strong>Bob the Drop</p>
           </div>
         </div>        
       </div>
@@ -62,7 +65,10 @@
   </div>
   <script type="text/javascript">
     var canvas = document.getElementById('canvas');
+    var destinationCanvas = document.getElementById('destinationCanvas')
     var ctx = canvas.getContext('2d');
+    var destCtx = destinationCanvas.getContext('2d');
+
     var image = document.getElementById('source');
     
     var numPadRows = 4;
@@ -193,27 +199,15 @@
       var j = Math.floor(e.offsetX / padWidth);
       var i = Math.floor(e.offsetY / padHeight);
       console.log(pads[i][j]);
+      drawSelectedDrop(pads[i][j]);
     });
 
-    
-    // console.log(pads);
-    // console.log(canvas.width);
-    // console.log(canvas.height);
 
-   
+    function drawSelectedDrop(pad) {
+      destCtx.clearRect(0, 0, destinationCanvas.width, destinationCanvas.height);
+      destCtx.drawImage(canvas, pad.x, pad.y, padWidth, padHeight, 0, 0, padWidth, padHeight);
+    }
 
-    // MyTracker.prototype.track = function(pixels, width, height) {
-    //   console.log(pixels);
-    //   console.log(width);
-    //   console.log(height);
-    // }
-
-    // var tracker = new MyTracker();
-
-    // tracker.on('track', function(res) {
-    //   console.log(res)
-    // });
-    // tracking.track('#canvas', tracker, {camera: true});
   </script>
 
 </body>
